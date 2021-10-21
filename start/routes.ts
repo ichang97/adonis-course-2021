@@ -45,15 +45,18 @@ Route.get('/xxx', async() => {
   return meow;
 });
 
-// Route.route('/api/users', ['GET', 'POST'], (context) => {
-//   return context;
-// });
 
-Route.get('/api/users', 'UsersController.index');
+Route.group(() => {
+  Route.resource('users', 'UsersController').apiOnly();
 
-Route.post('/api/users', 'UsersController.store');
+  // Route.get('/users', 'UsersController.index');
+  // Route.post('/users', 'UsersController.store');
 
-Route.get('/api/users/:name?', ({ params }) => {
-  return { params, name: 'My name is ' + params.name};
-});
+  Route.group(() => {
+    Route.get('/:id', ({params}) => {
+      return { name: 'Seller eiei.', id: params.id };
+    });
+  }).prefix('/seller');
+
+}).prefix('api/v1');
 
