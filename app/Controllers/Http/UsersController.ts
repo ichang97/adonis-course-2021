@@ -7,7 +7,6 @@ export default class UsersController {
 
   public async store ({ request }: HttpContextContract) {
     const payload = request.only(['name']); //recommend for validate request from body
-
     return payload;
   }
 
