@@ -58,5 +58,5 @@ Route.group(() => {
     });
   }).prefix('/seller');
 
-}).prefix('api/v1');
+}).prefix('api');
 
