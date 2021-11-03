@@ -48,15 +48,11 @@ Route.get('/xxx', async() => {
 
 Route.group(() => {
   Route.resource('users', 'UsersController').apiOnly();
+  Route.resource('address', 'UserAddressesController').apiOnly();
 
   // Route.get('/users', 'UsersController.index');
   // Route.post('/users', 'UsersController.store');
 
-  Route.group(() => {
-    Route.get('/:id', ({params}) => {
-      return { name: 'Seller eiei.', id: params.id };
-    });
-  }).prefix('/seller');
 
 }).prefix('api');
 
