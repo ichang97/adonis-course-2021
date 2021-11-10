@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import User from 'App/Models/User'
 
 export default class UsersController {
   public async index ({ response }: HttpContextContract) {
@@ -32,7 +33,9 @@ export default class UsersController {
 
   public async store ({ request }: HttpContextContract) {
     const payload = request.only(['name', 'email', 'password', 'age', 'status']); //recommend for validate request from body
-    const user = await Database.table('users').insert(payload);
+    // const user = await Database.table('users').insert(payload);
+
+    const user = await User.create(payload);
 
     // const users = await Database.from('users')
     //                 .where(builder => {
@@ -45,21 +48,31 @@ export default class UsersController {
     return user;
   }
 
-  public async show ({}: HttpContextContract) {
+  public async show ({ params, response }: HttpContextContract) {
+    const user = await User.find(params.id);
+    await user?.load('UserAddresses');
+
+    return response.status(200).send(user);
   }
 
-  public async update ({ params, request }: HttpContextContract) {
+  public async update ({ params, request, response }: HttpContextContract) {
     const payload = request.only(['name', 'email', 'password', 'age']);
 
     const { id: userId } = params;
 
-    const result = await Database.from('users').where('id', userId).update(payload);
+    // const result = await Database.from('users').where('id', userId).update(payload);
+    const user = await User.find(userId);
+    await user?.merge(payload).save();
 
-    return {
-      result,
-      payload,
-      userId
-    }
+
+
+    // return {
+    //   result,
+    //   payload,
+    //   userId
+    // }
+
+    return response.status(200).send(user);
   }
 
   public async destroy ({ params }: HttpContextContract) {
