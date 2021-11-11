@@ -16,12 +16,12 @@ export default class UsersController {
 
     // const users = await Database.from('users').innerJoin('user_addresses', 'users.id', '=', 'user_addresses.user_id').toQuery();
 
-    const users = await Database.from('users');
+    // const users = await Database.from('users');
 
     // .toSql() -> view sql statement without bindings
     // .toQuery() -> view sql statement included bindings
 
-    return users;
+    // return users;
 
 
     // return response.status(500).send({
@@ -29,6 +29,14 @@ export default class UsersController {
     //   message: 'error. eiei',
     //   data: null
     // })
+
+    const user = await User.query()
+      .withScopes((scope) => {
+        scope.isActive()
+      })
+      .paginate(1, 5)
+
+    return response.status(200).send(user.serialize())
   }
 
   public async store ({ request }: HttpContextContract) {

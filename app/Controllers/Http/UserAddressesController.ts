@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import User from 'App/Models/User';
 
 export default class UserAddressesController {
   public async index ({}: HttpContextContract) {
@@ -11,15 +12,29 @@ export default class UserAddressesController {
   public async create ({}: HttpContextContract) {
   }
 
-  public async store ({ request }: HttpContextContract) {
+  public async store ({ params, request, response }: HttpContextContract) {
     const payload = request.only(['address', 'sub_district', 'district', 'province', 'phone', 'user_id']);
 
-    const result = await Database.table('user_addresses').insert(payload);
+    // const result = await Database.table('user_addresses').insert(payload);
 
-    return {
-      payload,
-      result
-    };
+    // return {
+    //   payload,
+    //   result
+    // };
+
+    const { userId } = params;
+
+    try{
+      const user = await User.findOrFail(userId);
+      await user.related('UserAddresses').create(payload);
+
+      await user?.load('UserAddresses');
+
+      return response.status(201).send(user);
+
+    }catch(e){
+      return response.status(500).send({message: e.message})
+    }
   }
 
   public async show ({ params }: HttpContextContract) {

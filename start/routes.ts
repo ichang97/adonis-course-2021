@@ -48,7 +48,8 @@ Route.get('/xxx', async() => {
 
 Route.group(() => {
   Route.resource('users', 'UsersController').apiOnly();
-  Route.resource('address', 'UserAddressesController').apiOnly();
+  Route.resource('users/:userId/address', 'UserAddressesController').apiOnly();
+  Route.resource('users/:userId/companies', 'UserCompaniesController').apiOnly;
 
   // Route.get('/users', 'UsersController.index');
   // Route.post('/users', 'UsersController.store');
@@ -56,3 +57,8 @@ Route.group(() => {
 
 }).prefix('api');
 
+Route.group(() => {
+  Route.post('login', 'AuthController.login').middleware('logRequest')
+  Route.get('me', 'AuthController.me').middleware(['auth', 'checkUser'])
+  Route.post('logout', 'AuthController.logout').middleware(['auth', 'logRequest'])
+}).prefix('auth');
