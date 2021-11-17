@@ -1,5 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+// import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import CreateUserValidator from 'App/Validators/CreateUserValidator'
 import Database from '@ioc:Adonis/Lucid/Database'
+import Event from '@ioc:Adonis/Core/Event'
+import Redis from '@ioc:Adonis/Addons/Redis'
 import User from 'App/Models/User'
 
 export default class UsersController {
@@ -36,14 +40,53 @@ export default class UsersController {
       })
       .paginate(1, 5)
 
-    return response.status(200).send(user.serialize())
+    await Redis.set('USERS_API', JSON.stringify(user.serialize()), 'EX', 120)
+    const result = await Redis.get('USERS_API')
+    return result
+
+    // return response.status(200).send(user.serialize({
+    //   fields: {
+    //     omit: ['created_at', 'updated_at']
+    //   }
+    // }))
   }
 
   public async store ({ request }: HttpContextContract) {
-    const payload = request.only(['name', 'email', 'password', 'age', 'status']); //recommend for validate request from body
+    // const payload = request.only(['name', 'email', 'password', 'age', 'status']); //recommend for validate request from body
     // const user = await Database.table('users').insert(payload);
 
+    // const createUserSchema = schema.create({
+    //   name: schema.string({},[
+    //     rules.alpha()
+    //   ]),
+    //   email: schema.string({}, [
+    //     rules.email(),
+    //     rules.unique({
+    //       table: 'users',
+    //       column: 'email'
+    //     })
+    //   ]),
+    //   password: schema.string({}, [
+    //     rules.confirmed()
+    //   ]),
+    //   age: schema.number.optional(),
+    //   status: schema.string()
+    // })
+
+    // const payload = await request.validate(
+    //   { 
+    //     schema: createUserSchema, 
+    //     messages: {
+    //       'required' : 'จำเป็นต้องกรอกข้อมูล {{ field }}'
+    //     }
+    //   })
+
+    // const createUserSchema = schema;
+    const payload = await request.validate(CreateUserValidator)
+
     const user = await User.create(payload);
+
+    Event.emit('new:user', user);
 
     // const users = await Database.from('users')
     //                 .where(builder => {
@@ -52,7 +95,7 @@ export default class UsersController {
     //                 .where(builder => {
     //                   builder.where('age', '>', 19).orWhere('status', 'active')
     //                 })
-    
+
     return user;
   }
 
@@ -82,6 +125,10 @@ export default class UsersController {
 
     return response.status(200).send(user);
   }
+
+  // public async update({ params, request}: HttpContextContract){
+
+  // }
 
   public async destroy ({ params }: HttpContextContract) {
     const {id: userId} = params;
