@@ -25,9 +25,11 @@
   "dependencies": {
     "@adonisjs/auth": "^8.0.10",
     "@adonisjs/core": "^5.4.0",
+    "@adonisjs/drive-s3": "^1.0.5",
     "@adonisjs/lucid": "^16.2.2",
     "@adonisjs/redis": "^7.0.9",
     "@adonisjs/repl": "^3.1.7",
+    "@adonisjs/shield": "^7.0.7",
     "luxon": "^2.0.2",
     "mysql": "^2.18.1",
     "phc-bcrypt": "^1.0.7",

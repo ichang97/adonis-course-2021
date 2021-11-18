@@ -62,3 +62,5 @@ Route.group(() => {
   Route.get('me', 'AuthController.me').middleware(['auth', 'checkUser'])
   Route.post('logout', 'AuthController.logout').middleware(['auth', 'logRequest'])
 }).prefix('auth');
+
+Route.post('/upload/file', 'FilesController.upload')

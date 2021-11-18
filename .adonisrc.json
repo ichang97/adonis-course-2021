@@ -28,7 +28,9 @@
     "@adonisjs/core",
     "@adonisjs/lucid",
     "@adonisjs/auth",
-    "@adonisjs/redis"
+    "@adonisjs/redis",
+    "@adonisjs/drive-s3",
+    "@adonisjs/shield"
   ],
   "aceProviders": [
     "@adonisjs/repl"
