@@ -1,4 +1,6 @@
 import Event from '@ioc:Adonis/Core/Event'
+import Bull from '@ioc:Rocketseat/Bull'
+import SendSmsMessage from 'App/Jobs/SendSmsMessage'
 /*
 |--------------------------------------------------------------------------
 | Preloaded File
@@ -15,5 +17,6 @@ Event.on('new:user', (user) => {
 })
 
 Event.on('sent:sms', (payload) => {
+    Bull.add(new SendSmsMessage().key, payload)
     console.log(`sending sms to -> ${payload.phone} : ${payload.message}`)
 })

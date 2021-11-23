@@ -5,7 +5,7 @@
  * file.
  */
 
-import Env from '@ioc:Adonis/Core/Env'
+// import Env from '@ioc:Adonis/Core/Env'
 import { ShieldConfig } from '@ioc:Adonis/Addons/Shield'
 
 /*
@@ -74,7 +74,7 @@ export const csrf: ShieldConfig['csrf'] = {
   | Enable/Disable CSRF
   |--------------------------------------------------------------------------
   */
-  enabled: Env.get('NODE_ENV') !== 'testing',
+  enabled: false,
 
   /*
   |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ export const csrf: ShieldConfig['csrf'] = {
   | AJAX requests.
   |
   */
-  enableXsrfCookie: true,
+  enableXsrfCookie: false,
 
   /*
   |--------------------------------------------------------------------------
@@ -119,7 +119,7 @@ export const csrf: ShieldConfig['csrf'] = {
   | Define an array of HTTP methods to be validated for a valid CSRF token.
   |
   */
-  methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
+  methods: [],
 }
 
 /*

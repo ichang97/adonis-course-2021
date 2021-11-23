@@ -5,9 +5,12 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Event from '@ioc:Adonis/Core/Event'
 import Redis from '@ioc:Adonis/Addons/Redis'
 import User from 'App/Models/User'
+import Bull from '@ioc:Rocketseat/Bull'
+import SendSmsMessage from 'App/Jobs/SendSmsMessage'
+import DelayJob from 'App/Jobs/DelayJob'
 
 export default class UsersController {
-  public async index ({ response }: HttpContextContract) {
+  public async index () {
     //return response.status(401).send({name: 'Mark Fuck U.'});
 
     // return response.status(200).send({
@@ -87,6 +90,13 @@ export default class UsersController {
     const user = await User.create(payload);
 
     Event.emit('new:user', user);
+    Bull.schedule(new DelayJob().key, {email: user.email}, 60*1000)
+    Bull.add(new DelayJob().key, {message: 'user - ' + user.email + ' registered'}, {
+      repeat: {
+        // every: 10 * 1000
+        cron: '0 12 * * *'
+      }
+    })
 
     // const users = await Database.from('users')
     //                 .where(builder => {
@@ -114,6 +124,8 @@ export default class UsersController {
     // const result = await Database.from('users').where('id', userId).update(payload);
     const user = await User.find(userId);
     await user?.merge(payload).save();
+
+    Bull.add(new SendSmsMessage().key, user)
 
 
 

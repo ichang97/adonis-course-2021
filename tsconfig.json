@@ -32,7 +32,8 @@
       "@adonisjs/auth",
       "@adonisjs/redis",
       "@adonisjs/drive-s3",
-      "@adonisjs/shield"
+      "@adonisjs/shield",
+      "@rocketseat/adonis-bull"
     ]
   }
 }

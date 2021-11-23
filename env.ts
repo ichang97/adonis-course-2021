@@ -40,4 +40,9 @@ export default Env.rules({
   S3_BUCKET: Env.schema.string(),
   S3_REGION: Env.schema.string(),
   S3_ENDPOINT: Env.schema.string.optional(),
+
+
+  BULL_REDIS_HOST: Env.schema.string({ format: 'host' }),
+  BULL_REDIS_PORT: Env.schema.number(),
+  BULL_REDIS_PASSWORD: Env.schema.string.optional(),
 })
