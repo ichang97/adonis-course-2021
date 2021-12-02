@@ -6,4 +6,5 @@ RUN node ace build --production
 
 EXPOSE 3333
 
-ENTRYPOINT [ "entrypoint.sh" ]
+RUN chmod +x entrypoint.sh
+ENTRYPOINT [ "./entrypoint.sh" ]
