@@ -6,4 +6,4 @@ RUN node ace build --production
 
 EXPOSE 3333
 
-CMD ["node", "build/server.js"]
+ENTRYPOINT [ "entrypoint.sh" ]
