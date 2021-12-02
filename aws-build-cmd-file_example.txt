@@ -1,0 +1,21 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+  pre_build:
+    commands:
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+  build:
+    commands:
+      - docker build -t adonis:tag .
+      - docker tag adonis:tag 669553161844.dkr.ecr.ap-southeast-1.amazonaws.com/adonis:tag
+      - docker push 669553161844.dkr.ecr.ap-southeast-1.amazonaws.com/adonis:tag
+      # - command
+  post_build:
+    commands:
+      - echo '[{"name":"mark-adonis","imageUri":"669553161844.dkr.ecr.ap-southeast-1.amazonaws.com/adonis:tag"}]' > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
